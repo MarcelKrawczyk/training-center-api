@@ -1,0 +1,23 @@
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# Build results
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+
+# ASP.NET Core
+appsettings.Development.json
+
+# NuGet
+*.nupkg
+packages/
+.nuget/
+
+# OS
+.DS_Store
+Thumbs.db
