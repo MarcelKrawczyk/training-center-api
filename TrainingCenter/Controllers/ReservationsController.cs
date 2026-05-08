@@ -52,4 +52,34 @@ public class ReservationsController : ControllerBase
         }
         return Ok(result);
     }
+
+    [HttpPost]
+    public IActionResult Create([FromBody] Reservation reservation)
+    {
+        if (reservation.EndTime <= reservation.StartTime)
+            return BadRequest("EndTime must be after the StartTime");
+        
+        var room = DataStore.Rooms.FirstOrDefault(r => r.Id == reservation.RoomId);
+ 
+        if (room == null)
+            return NotFound("Room not found");
+        
+        if (!room.IsActive)
+            return BadRequest("Room is not active");
+        
+        bool hasConflict = DataStore.Reservations.Any(r =>
+            r.RoomId == reservation.RoomId &&
+            r.Status != "cancelled" &&
+            r.Date.Date == reservation.Date.Date &&
+            r.StartTime < reservation.EndTime &&
+            reservation.StartTime < r.EndTime);
+        
+        if (hasConflict)
+            return Conflict("Room is reserved in the scheduled time");
+        
+        reservation.Id = DataStore.nextReservationId;
+        DataStore.Reservations.Add(reservation);
+        
+        return CreatedAtAction("GetById", new { id = reservation.Id }, reservation);
+    }
 }
