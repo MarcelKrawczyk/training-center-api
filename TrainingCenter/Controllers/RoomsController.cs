@@ -75,4 +75,29 @@ public class RoomsController : ControllerBase
 
         return CreatedAtAction("GetById", new { id = room.Id }, room);
     }
+
+    [HttpPut("{id}")]
+    public IActionResult Update(int id, [FromBody] Room updated)
+    {
+        Room? result = null;
+        foreach (var room in DataStore.Rooms)
+        {
+            if (room.Id == id)
+            {
+                result = room;
+                break;
+            }
+        }
+        if (result == null)
+            return NotFound("Room not found");
+        
+        result.Name = updated.Name;
+        result.Capacity = updated.Capacity;
+        result.IsActive = updated.IsActive;
+        result.BuildingCode = updated.BuildingCode;
+        result.Floor = updated.Floor;
+        result.HasProjector = updated.HasProjector;
+        
+        return Ok(result);
+    }
 }
