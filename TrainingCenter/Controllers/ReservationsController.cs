@@ -8,8 +8,6 @@ namespace TrainingCenter.Controllers;
 [Route("api/[controller]")]
 public class ReservationsController : ControllerBase
 {
-    //GET /api/reservations
-    //GET /api/reservations?date=2026-05-10&status=confirmed&roomId=2
     [HttpGet]
     public IActionResult GetAll(
         [FromQuery] DateTime? date = null,
@@ -81,5 +79,45 @@ public class ReservationsController : ControllerBase
         DataStore.Reservations.Add(reservation);
         
         return CreatedAtAction("GetById", new { id = reservation.Id }, reservation);
+    }
+
+    [HttpPut("{id}")]
+    public IActionResult Update(int id, [FromBody] Reservation reservation)
+    {
+        if (reservation.EndTime <= reservation.StartTime)
+            return BadRequest("EndTime must be after the StartTime");
+ 
+        var existing = DataStore.Reservations.FirstOrDefault(r => r.Id == id);
+ 
+        if (existing == null)
+            return NotFound("Reservation not found");
+ 
+        var room = DataStore.Rooms.FirstOrDefault(r => r.Id == reservation.RoomId);
+ 
+        if (room == null)
+            return NotFound("Room not found");
+ 
+        if (!room.IsActive)
+            return BadRequest("The room is not active");
+        
+        bool hasConflict = DataStore.Reservations.Any(r =>
+            r.Id != id &&
+            r.RoomId == reservation.RoomId &&
+            r.Status != "cancelled" &&
+            r.Date.Date == reservation.Date.Date &&
+            r.StartTime < reservation.EndTime &&
+            reservation.StartTime < r.EndTime);
+        if (hasConflict)
+            return Conflict("Room is reserved in the scheduled time");
+        
+        existing.RoomId = reservation.RoomId;
+        existing.OrganizerName = reservation.OrganizerName;
+        existing.Topic = reservation.Topic;
+        existing.Date = reservation.Date;
+        existing.StartTime = reservation.StartTime;
+        existing.EndTime = reservation.EndTime;
+        existing.Status = reservation.Status;
+ 
+        return Ok(existing);
     }
 }
