@@ -120,4 +120,16 @@ public class ReservationsController : ControllerBase
  
         return Ok(existing);
     }
+
+    [HttpDelete("{id}")]
+    public IActionResult Delete(int id)
+    {
+        var reservation = DataStore.Reservations.FirstOrDefault(r => r.Id == id);
+
+        if (reservation == null)
+            return NotFound("Reservation not found");
+        
+        DataStore.Reservations.Remove(reservation);
+        return NoContent();
+    }
 }
