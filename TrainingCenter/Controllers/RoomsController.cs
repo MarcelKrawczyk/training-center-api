@@ -65,4 +65,14 @@ public class RoomsController : ControllerBase
         }
         return Ok(result);
     }
+    
+    [HttpPost]
+    public IActionResult Create([FromBody] Room room)
+    {
+        room.Id = DataStore.nextRoomId;
+        
+        DataStore.Rooms.Add(room);
+
+        return CreatedAtAction("GetById", new { id = room.Id }, room);
+    }
 }
