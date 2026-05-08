@@ -7,12 +7,12 @@ public class Reservation
     public int Id { get; set; }
 
     public int RoomId { get; set; }
-    
-    [Required]
-    public String OrganizerName { get; set; }
-    
-    [Required]
-    public String Topic  { get; set; }
+
+    [Required] 
+    public string OrganizerName { get; set; } = string.Empty;
+
+    [Required] 
+    public string Topic { get; set; } = string.Empty;
     
     public DateTime Date { get; set; }
     
