@@ -22,6 +22,6 @@ public class Reservation
     
     [Required]
     [RegularExpression("planned|confirmed|cancelled",
-        ErrorMessage = "Status musi być: planned, confirmed lub cancelled.")]
+        ErrorMessage = "Status needs to be planned, confirmed or cancelled.")]
     public string Status { get; set; } = "planned";
 }

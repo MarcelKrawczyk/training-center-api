@@ -43,7 +43,7 @@ public static class DataStore
         },
         new Reservation
         {
-            Id = 3, RoomId = 2, OrganizerName = "Ann I", Topic = "Zajęcia HTTP", Date = new DateTime(2026, 5, 11),
+            Id = 3, RoomId = 2, OrganizerName = "Ann I", Topic = "Client meeting", Date = new DateTime(2026, 5, 11),
             StartTime = new TimeSpan(9, 0, 0), EndTime = new TimeSpan(11, 0, 0), Status = "confirmed"
         },
         new Reservation
@@ -53,11 +53,11 @@ public static class DataStore
         },
         new Reservation
         {
-            Id = 5, RoomId = 4, OrganizerName = "Kate S", Topic = "Szkolenia", Date = new DateTime(2026, 5, 13),
+            Id = 5, RoomId = 4, OrganizerName = "Kate S", Topic = "Training", Date = new DateTime(2026, 5, 13),
             StartTime = new TimeSpan(10, 0, 0), EndTime = new TimeSpan(12, 0, 0), Status = "cancelled"
         },
     };
 
-    private static int _nextRoomId = Rooms.Max(r => r.Id) + 1;
-    private static int _nextReservationId = Reservations.Max(r => r.Id) + 1;
+    public static int nextRoomId => Rooms.Max(r => r.Id) + 1;
+    public static int nextReservationId => Reservations.Max(r => r.Id) + 1;
 }

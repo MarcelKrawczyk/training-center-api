@@ -50,4 +50,19 @@ public class RoomsController : ControllerBase
         }
         return Ok(result);
     }
+
+    [HttpGet("building/{buildingCode}")]
+    public IActionResult GetByBuildingCode(string buildingCode)
+    {
+        var result = new List<Room>();
+
+        foreach (var room in DataStore.Rooms)
+        {
+            if (room.BuildingCode == buildingCode)
+            {
+                result.Add(room);
+            }
+        }
+        return Ok(result);
+    }
 }
