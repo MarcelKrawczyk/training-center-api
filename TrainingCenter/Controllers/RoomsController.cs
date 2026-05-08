@@ -31,4 +31,23 @@ public class RoomsController : ControllerBase
         }
         return Ok(result);
     }
+
+    [HttpGet("{id}")]
+    public IActionResult GetById(int id)
+    {
+        Room? result = null;
+
+        foreach (var room in DataStore.Rooms)
+        {
+            if (room.Id == id)
+            {
+                result = room;
+            }
+        }
+        if (result == null)
+        {
+            return NotFound("Room not found");
+        }
+        return Ok(result);
+    }
 }
