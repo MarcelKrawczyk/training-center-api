@@ -100,4 +100,33 @@ public class RoomsController : ControllerBase
         
         return Ok(result);
     }
+
+    [HttpDelete("{id}")]
+    public IActionResult Delete(int id)
+    {
+        Room? deletedRoom = null;
+        foreach (var room in DataStore.Rooms)
+        {
+            if (room.Id == id)
+            {
+                deletedRoom = room;
+                break;
+            }
+        }
+        if (deletedRoom == null)
+        {
+            return NotFound("Room not found");
+        }
+
+        foreach (var reservation in DataStore.Reservations)
+        {
+            var reservationStart = reservation.Date + reservation.StartTime;
+            if (reservation.RoomId == id && reservationStart >= DateTime.Now)
+            {
+                return Conflict("Cannot delete Room that has a upcoming reservation");
+            }
+        }
+        DataStore.Rooms.Remove(deletedRoom);
+        return NoContent();
+    }
 }
