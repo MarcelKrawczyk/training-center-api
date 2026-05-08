@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using TrainingCenter.Data;
 using TrainingCenter.Models;
@@ -31,6 +30,25 @@ public class ReservationsController : ControllerBase
                 continue;
             
             result.Add(res);
+        }
+        return Ok(result);
+    }
+
+    [HttpGet("{id}")]
+    public IActionResult GetById(int id)
+    {
+        Reservation? result = null;
+
+        foreach (var res in DataStore.Reservations)
+        {
+            if (res.Id == id)
+            {
+                result = res;
+            }
+        }
+        if (result == null)
+        {
+           return NotFound("Reservation not found"); 
         }
         return Ok(result);
     }
