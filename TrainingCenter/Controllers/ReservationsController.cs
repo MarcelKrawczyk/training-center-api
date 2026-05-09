@@ -16,7 +16,7 @@ public class ReservationsController : ControllerBase
     {
         var result = new List <Reservation>();
 
-        foreach (var res in DataStore.Reservations)
+        foreach (var res in AppData.Reservations)
         {
             if(date != null && res.Date != date)
                 continue;
@@ -37,7 +37,7 @@ public class ReservationsController : ControllerBase
     {
         Reservation? result = null;
 
-        foreach (var res in DataStore.Reservations)
+        foreach (var res in AppData.Reservations)
         {
             if (res.Id == id)
             {
@@ -57,7 +57,7 @@ public class ReservationsController : ControllerBase
         if (reservation.EndTime <= reservation.StartTime)
             return BadRequest("EndTime must be after the StartTime");
         
-        var room = DataStore.Rooms.FirstOrDefault(r => r.Id == reservation.RoomId);
+        var room = AppData.Rooms.FirstOrDefault(r => r.Id == reservation.RoomId);
  
         if (room == null)
             return NotFound("Room not found");
@@ -65,7 +65,7 @@ public class ReservationsController : ControllerBase
         if (!room.IsActive)
             return BadRequest("Room is not active");
         
-        bool hasConflict = DataStore.Reservations.Any(r =>
+        bool hasConflict = AppData.Reservations.Any(r =>
             r.RoomId == reservation.RoomId &&
             r.Status != "cancelled" &&
             r.Date.Date == reservation.Date.Date &&
@@ -75,8 +75,8 @@ public class ReservationsController : ControllerBase
         if (hasConflict)
             return Conflict("Room is reserved in the scheduled time");
         
-        reservation.Id = DataStore.nextReservationId;
-        DataStore.Reservations.Add(reservation);
+        reservation.Id = AppData.NextReservationId;
+        AppData.Reservations.Add(reservation);
         
         return CreatedAtAction("GetById", new { id = reservation.Id }, reservation);
     }
@@ -87,12 +87,12 @@ public class ReservationsController : ControllerBase
         if (reservation.EndTime <= reservation.StartTime)
             return BadRequest("EndTime must be after the StartTime");
  
-        var existing = DataStore.Reservations.FirstOrDefault(r => r.Id == id);
+        var existing = AppData.Reservations.FirstOrDefault(r => r.Id == id);
  
         if (existing == null)
             return NotFound("Reservation not found");
  
-        var room = DataStore.Rooms.FirstOrDefault(r => r.Id == reservation.RoomId);
+        var room = AppData.Rooms.FirstOrDefault(r => r.Id == reservation.RoomId);
  
         if (room == null)
             return NotFound("Room not found");
@@ -100,7 +100,7 @@ public class ReservationsController : ControllerBase
         if (!room.IsActive)
             return BadRequest("The room is not active");
         
-        bool hasConflict = DataStore.Reservations.Any(r =>
+        bool hasConflict = AppData.Reservations.Any(r =>
             r.Id != id &&
             r.RoomId == reservation.RoomId &&
             r.Status != "cancelled" &&
@@ -124,12 +124,12 @@ public class ReservationsController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
-        var reservation = DataStore.Reservations.FirstOrDefault(r => r.Id == id);
+        var reservation = AppData.Reservations.FirstOrDefault(r => r.Id == id);
 
         if (reservation == null)
             return NotFound("Reservation not found");
         
-        DataStore.Reservations.Remove(reservation);
+        AppData.Reservations.Remove(reservation);
         return NoContent();
     }
 }

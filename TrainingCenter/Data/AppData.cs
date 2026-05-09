@@ -2,7 +2,7 @@ using TrainingCenter.Models;
 
 namespace TrainingCenter.Data;
 
-public static class DataStore
+public static class AppData
 {
     public static List<Room> Rooms = new List<Room>
     {
@@ -58,6 +58,6 @@ public static class DataStore
         },
     };
 
-    public static int nextRoomId => Rooms.Max(r => r.Id) + 1;
-    public static int nextReservationId => Reservations.Max(r => r.Id) + 1;
+    public static int NextRoomId => Rooms.Max(r => r.Id) + 1;
+    public static int NextReservationId => Reservations.Max(r => r.Id) + 1;
 }

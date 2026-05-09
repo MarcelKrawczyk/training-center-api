@@ -16,7 +16,7 @@ public class RoomsController : ControllerBase
     {
         var result = new List<Room>();
 
-        foreach (var room in DataStore.Rooms)
+        foreach (var room in AppData.Rooms)
         {
             if (minCapacity != null && room.Capacity < minCapacity)
                 continue;
@@ -37,7 +37,7 @@ public class RoomsController : ControllerBase
     {
         Room? result = null;
 
-        foreach (var room in DataStore.Rooms)
+        foreach (var room in AppData.Rooms)
         {
             if (room.Id == id)
             {
@@ -56,7 +56,7 @@ public class RoomsController : ControllerBase
     {
         var result = new List<Room>();
 
-        foreach (var room in DataStore.Rooms)
+        foreach (var room in AppData.Rooms)
         {
             if (room.BuildingCode == buildingCode)
             {
@@ -69,9 +69,9 @@ public class RoomsController : ControllerBase
     [HttpPost]
     public IActionResult Create([FromBody] Room room)
     {
-        room.Id = DataStore.nextRoomId;
+        room.Id = AppData.NextRoomId;
         
-        DataStore.Rooms.Add(room);
+        AppData.Rooms.Add(room);
 
         return CreatedAtAction("GetById", new { id = room.Id }, room);
     }
@@ -80,7 +80,7 @@ public class RoomsController : ControllerBase
     public IActionResult Update(int id, [FromBody] Room updated)
     {
         Room? result = null;
-        foreach (var room in DataStore.Rooms)
+        foreach (var room in AppData.Rooms)
         {
             if (room.Id == id)
             {
@@ -105,7 +105,7 @@ public class RoomsController : ControllerBase
     public IActionResult Delete(int id)
     {
         Room? deletedRoom = null;
-        foreach (var room in DataStore.Rooms)
+        foreach (var room in AppData.Rooms)
         {
             if (room.Id == id)
             {
@@ -118,7 +118,7 @@ public class RoomsController : ControllerBase
             return NotFound("Room not found");
         }
 
-        foreach (var reservation in DataStore.Reservations)
+        foreach (var reservation in AppData.Reservations)
         {
             var reservationStart = reservation.Date + reservation.StartTime;
             if (reservation.RoomId == id && reservationStart >= DateTime.Now)
@@ -126,7 +126,7 @@ public class RoomsController : ControllerBase
                 return Conflict("Cannot delete Room that has a upcoming reservation");
             }
         }
-        DataStore.Rooms.Remove(deletedRoom);
+        AppData.Rooms.Remove(deletedRoom);
         return NoContent();
     }
 }
